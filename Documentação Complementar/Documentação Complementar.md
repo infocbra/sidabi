@@ -7,5 +7,5 @@ Primeiramente é preciso passar para o pgAdmin o path da pasta "bin" do PostgreS
 ![alt text](2Path.png)
 - Na página Binary Path, desça a página e verifique a versão do PostgreSQL selecionada, é recomendado que se use a versão mais recente.
 
-- O campo "Binary Path" deve estar com a string "$DIR/../runtime", para passar o path para o pgAdmin selecione o ícone de pasta da opção selecionada e passe o caminho para a pasta "bin" no seu computador. Só é necessário passar o path para a versão que você vai usar.
+- Caso o campo "Binary Path" esteja preenchido com a string "$DIR/../runtime" será necessário configurar o path. Para isso selecione o ícone de pasta da opção selecionada, navegue pelo caminho para a pasta "bin" no seu computador e, quando estiver na pasta correta, confirme a seleção da pasta. Só é necessário configurar o path para a versão que você vai usar.
 ![alt text](3PastaBin.png)
