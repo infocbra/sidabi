@@ -1,0 +1,51 @@
+# docker-compose.yml (ou docker-compose-sidabi.yml)
+services:
+  sidabi_db:
+    container_name: sidabi_db
+    image: postgres:13.20
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "5434:5432" # Mapeia porta 5434 no host para 5432 no contêiner
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./database_postgres/pg_data:/var/lib/postgresql/data/
+      - ./database_postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database_postgres/pg_dump:/var/backups
+    networks:
+      - sidabi_server
+
+  sidabi_app:
+    container_name: sidabi_app
+    build:
+      context: ./Compose-sidabi/sidabi_app
+      dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h sidabi_db -p 5432 -U $POSTGRES_USER"] # Use o nome do serviço para o host
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "8081:80"
+    volumes:
+      - sensor-files:/var/www/sidabi/biodata/files/sessao_arquivos/
+    depends_on:
+      sidabi_db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - sidabi_server
+
+networks:
+  sidabi_server:
+    driver: bridge
+volumes:
+  sensor-files:

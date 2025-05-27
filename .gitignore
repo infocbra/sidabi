@@ -1,0 +1,4 @@
+.env
+pg_data
+database_postgres/pg_data/
+dump.db

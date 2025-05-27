@@ -13,6 +13,8 @@ RUN apt-get clean && apt-get update && apt-get install -y \
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
 COPY dist .
+
+# Ajusta permissões do diretório principal da aplicação
 RUN chown -R www-data:www-data /var/www
 
 COPY start-apache /usr/local/bin/start-apache
