@@ -1,7 +1,6 @@
-# docker-compose.yml (ou docker-compose-sidabi.yml)
 services:
   sidabi_db:
-    container_name: sidabi_db
+    container_name: sidabi_database
     image: postgres:13.20
     restart: always
     healthcheck:
@@ -10,7 +9,7 @@ services:
       timeout: 10s
       retries: 10
     ports:
-      - "5434:5432" # Mapeia porta 5434 no host para 5432 no contêiner
+      - "5434:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -23,17 +22,17 @@ services:
       - sidabi_server
 
   sidabi_app:
-    container_name: sidabi_app
+    container_name: sidabi_application
     build:
       context: ./Compose-sidabi/sidabi_app
       dockerfile: Dockerfile
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h sidabi_db -p 5432 -U $POSTGRES_USER"] # Use o nome do serviço para o host
+      test: ["CMD-SHELL", "pg_isready -h $DB_HOST -p 5432 -U $POSTGRES_USER"]
       interval: 5s
       timeout: 10s
       retries: 10
     ports:
-      - "8081:80"
+      - "80:80"
     volumes:
       - sensor-files:/var/www/sidabi/biodata/files/sessao_arquivos/
     depends_on:
